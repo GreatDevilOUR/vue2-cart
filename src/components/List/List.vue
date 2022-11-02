@@ -11,9 +11,9 @@
         <div class="upper">
           <p class="price">￥{{ item.goods_price }}</p>
           <div class="count">
-            <button @click="add(item.id)">+</button>
-            <input type="text" readonly v-model="item.count" />
             <button @click="menus(item.id)">-</button>
+            <input type="text" readonly v-model="item.count" />
+            <button @click="add(item.id)">+</button>
           </div>
         </div>
       </div>
@@ -77,6 +77,8 @@ export default {
       eventBus.$emit("getSum", this.getSum, this.ids.length);
       if (this.setAllCheck) {
         eventBus.$emit("setAll", true);
+      } else {
+        eventBus.$emit("setAll", false);
       }
     },
     getlist() {
@@ -101,6 +103,11 @@ export default {
           });
       }
       eventBus.$emit("getSum", this.getSum, this.ids.length);
+      if (this.setAllCheck) {
+        eventBus.$emit("setAll", true);
+      } else {
+        eventBus.$emit("setAll", false);
+      }
     },
     menus(id) {
       if (this.ids.includes(id)) {
@@ -117,6 +124,11 @@ export default {
           });
       }
       eventBus.$emit("getSum", this.getSum, this.ids.length);
+      if (this.setAllCheck) {
+        eventBus.$emit("setAll", true);
+      } else {
+        eventBus.$emit("setAll", false);
+      }
     },
     getAll(isCheckAll) {
       console.log("兄弟组件数据", isCheckAll);
@@ -127,11 +139,16 @@ export default {
             this.arrlist.forEach((item) => (item.count = 1));
           }
         });
-        eventBus.$emit("getSum", this.getSum, this.ids.length);
+        // eventBus.$emit("getSum", this.getSum, this.ids.length);
       } else {
         this.ids = [];
         this.arrlist.forEach((item) => (item.count = 0));
-        eventBus.$emit("getSum", this.getSum, this.ids.length);
+      }
+      eventBus.$emit("getSum", this.getSum, this.ids.length);
+      if (this.setAllCheck) {
+        eventBus.$emit("setAll", true);
+      } else {
+        eventBus.$emit("setAll", false);
       }
     },
   },
@@ -203,9 +220,19 @@ export default {
   display: flex;
 }
 .count input {
-  width: 20px;
-  line-height: 16px;
+  width: 28px;
+  line-height: 28px;
   text-align: center;
+  background-color: #f2f3f5;
+  border: none;
+  margin: 0 2px;
+}
+.count button {
+  background-color: #f2f3f5;
+  border: none;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
 }
 .title {
   font-size: 14px;
