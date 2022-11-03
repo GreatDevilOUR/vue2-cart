@@ -1,20 +1,16 @@
 <template>
   <div class="box">
-    <div class="list" v-for="item in arrlist" :key="item.id">
+    <div class="list">
       <div
-        :class="['checkboxFour', ids.includes(item.id) ? 'checkboxFourAc' : '']"
-        @click="onchecp(item.id)"
+        :class="['checkboxFour', state == true ? 'checkboxFourAc' : '']"
+        @click="onchecp(id)"
       ></div>
-      <img :src="item.goods_img" alt="" />
+      <img :src="img" alt="" />
       <div class="content">
-        <p class="title">{{ item.goods_name }}</p>
+        <p class="title">{{ name }}</p>
         <div class="upper">
-          <p class="price">￥{{ item.goods_price }}</p>
-          <div class="count">
-            <button @click="menus(item.id)">-</button>
-            <input type="text" readonly v-model="item.count" />
-            <button @click="add(item.id)">+</button>
-          </div>
+          <p class="price">￥{{ price }}</p>
+          <Counter :count="count" :id="id"></Counter>
         </div>
       </div>
     </div>
@@ -22,135 +18,40 @@
 </template>
 
 <script>
-import eventBus from "@/until/eventBus.js";
+import Counter from "@/components/Counter/counter.vue";
 export default {
   props: {
-    list: {
-      type: Array,
+    id: {
+      required: true,
+      type: Number,
     },
-  },
-  data() {
-    return { ids: [], arrlist: [], isCheck: false };
-  },
-  created() {
-    eventBus.$on("checkAll", (isfa) => {
-      console.log("123");
-      this.getAll(isfa);
-    });
-  },
-  mounted() {
-    this.getlist();
-  },
-  watch: {
-    list(newval) {
-      this.arrlist = newval;
-      this.getlist();
+    name: {
+      default: "",
+      type: String,
     },
-  },
-  computed: {
-    getSum() {
-      let sum = this.arrlist
-        .filter((item) => this.ids.includes(item.id))
-        .reduce((sum, current) => {
-          return (sum += current.goods_price * current.count);
-        }, 0);
-      return sum;
+    img: {
+      default: "",
+      type: String,
     },
-    setAllCheck() {
-      return this.ids.length === this.arrlist.length;
+    price: {
+      default: "0.0",
+    },
+    count: {
+      default: 0,
+      type: Number,
+    },
+    state: {
+      default: true,
+      type: Boolean,
     },
   },
   methods: {
     onchecp(id) {
-      if (!this.ids.includes(id)) {
-        this.ids.push(id);
-        this.arrlist
-          .filter((item) => item.id == id)
-          .forEach((item) => (item.count = 1));
-      } else {
-        let index = this.ids.indexOf(id);
-        this.ids.splice(index, 1);
-        this.arrlist
-          .filter((item) => item.id == id)
-          .forEach((item) => (item.count = 0));
-      }
-      eventBus.$emit("getSum", this.getSum, this.ids.length);
-      if (this.setAllCheck) {
-        eventBus.$emit("setAll", true);
-      } else {
-        eventBus.$emit("setAll", false);
-      }
+      this.$emit("onChange-state", { id, state: this.state });
     },
-    getlist() {
-      this.arrlist = this.list;
-      this.arrlist.forEach((item) => {
-        this.$set(item, "count", 0); //利用$set属性给列表添加一项
-      });
-    },
-    add(id) {
-      if (this.ids.includes(id)) {
-        this.arrlist
-          .filter((item) => item.id == id)
-          .forEach((item) => {
-            item.count += 1;
-          });
-      } else {
-        this.ids.push(id);
-        this.arrlist
-          .filter((item) => item.id == id)
-          .forEach((item) => {
-            item.count += 1;
-          });
-      }
-      eventBus.$emit("getSum", this.getSum, this.ids.length);
-      if (this.setAllCheck) {
-        eventBus.$emit("setAll", true);
-      } else {
-        eventBus.$emit("setAll", false);
-      }
-    },
-    menus(id) {
-      if (this.ids.includes(id)) {
-        this.arrlist
-          .filter((item) => item.id == id)
-          .forEach((item) => {
-            if (item.count >= 1) {
-              item.count -= 1;
-              if (this.ids.includes(id) && item.count == 0) {
-                let index = this.ids.indexOf(id);
-                this.ids.splice(index, 1);
-              }
-            }
-          });
-      }
-      eventBus.$emit("getSum", this.getSum, this.ids.length);
-      if (this.setAllCheck) {
-        eventBus.$emit("setAll", true);
-      } else {
-        eventBus.$emit("setAll", false);
-      }
-    },
-    getAll(isCheckAll) {
-      console.log("兄弟组件数据", isCheckAll);
-      if (isCheckAll) {
-        this.arrlist.forEach((item) => {
-          if (!this.ids.includes(item.id)) {
-            this.ids.push(item.id);
-            this.arrlist.forEach((item) => (item.count = 1));
-          }
-        });
-        // eventBus.$emit("getSum", this.getSum, this.ids.length);
-      } else {
-        this.ids = [];
-        this.arrlist.forEach((item) => (item.count = 0));
-      }
-      eventBus.$emit("getSum", this.getSum, this.ids.length);
-      if (this.setAllCheck) {
-        eventBus.$emit("setAll", true);
-      } else {
-        eventBus.$emit("setAll", false);
-      }
-    },
+  },
+  components: {
+    Counter,
   },
 };
 </script>

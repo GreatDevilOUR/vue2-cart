@@ -2,50 +2,41 @@
   <div class="box">
     <div class="check">
       <span
-        :class="['checkAll', 'sumac', isAllBtn ? 'checkAllACtive' : '']"
+        :class="['checkAll', 'sumac', isFull ? 'checkAllACtive' : '']"
         @click="checkAllbtn"
       ></span>
       <span>全选</span>
     </div>
     <div class="count">
       <p class="sumac">合计:</p>
-      <P>￥{{ this.sum }}</P>
+      <P>￥{{ sum }}</P>
     </div>
     <div class="res">
-      <button>结算（{{ this.count }}）</button>
+      <button>结算（{{ count }}）</button>
     </div>
   </div>
 </template>
 
 <script>
-import eventBus from "@/until/eventBus.js";
 export default {
-  data() {
-    return {
-      isAllBtn: false,
-      sum: 0,
-      count: 0,
-    };
+  props: {
+    isFull: {
+      type: Boolean,
+      default: false,
+    },
+    sum: {
+      default: 0,
+      type: Number,
+    },
+    count: {
+      default: 0,
+      type: Number,
+    },
   },
-  created() {
-    eventBus.$on("getSum", this.getInfo);
-    eventBus.$on("setAll", this.setAll);
-  },
+  created() {},
   methods: {
     checkAllbtn() {
-      eventBus.$emit("checkAll", !this.isAllBtn);
-      // this.isAllBtn = !this.isAllBtn;
-    },
-    getInfo(sum, count) {
-      this.sum = sum;
-      this.count = count;
-    },
-    setAll(isbollen) {
-      if (isbollen) {
-        this.isAllBtn = true;
-      } else {
-        this.isAllBtn = false;
-      }
+      this.$emit("checkAll", this.isFull);
     },
   },
 };
