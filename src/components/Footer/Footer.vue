@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="foot_box">
     <div class="check">
       <span
         :class="['checkAll', 'sumac', isFull ? 'checkAllACtive' : '']"
@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style scoped>
-.box {
+.foot_box {
   position: fixed;
   bottom: -2px;
   height: 40px;

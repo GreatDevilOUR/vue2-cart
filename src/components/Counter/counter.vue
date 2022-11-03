@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import eventBus from "@/until/eventBus";
 export default {
   props: {
     id: {
@@ -21,10 +20,10 @@ export default {
   },
   methods: {
     menus(id) {
-      eventBus.$emit("menu", id);
+      this.$emit("menus", id);
     },
     add(id) {
-      eventBus.$emit("add", id);
+      this.$emit("add", id);
     },
   },
 };

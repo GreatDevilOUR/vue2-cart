@@ -1,24 +1,21 @@
 <template>
-  <div class="box">
-    <div class="list">
-      <div
-        :class="['checkboxFour', state == true ? 'checkboxFourAc' : '']"
-        @click="onchecp(id)"
-      ></div>
-      <img :src="img" alt="" />
-      <div class="content">
-        <p class="title">{{ name }}</p>
-        <div class="upper">
-          <p class="price">￥{{ price }}</p>
-          <Counter :count="count" :id="id"></Counter>
-        </div>
+  <div class="list">
+    <div
+      :class="['checkboxFour', state == true ? 'checkboxFourAc' : '']"
+      @click="onchecp(id)"
+    ></div>
+    <img :src="img" alt="" />
+    <div class="content">
+      <p class="title">{{ name }}</p>
+      <div class="upper">
+        <p class="price">￥{{ price }}</p>
+        <slot></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Counter from "@/components/Counter/counter.vue";
 export default {
   props: {
     id: {
@@ -50,17 +47,10 @@ export default {
       this.$emit("onChange-state", { id, state: this.state });
     },
   },
-  components: {
-    Counter,
-  },
 };
 </script>
 
 <style scoped>
-.box {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
 .list {
   width: 100%;
   height: 150px;

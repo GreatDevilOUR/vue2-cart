@@ -1,17 +1,26 @@
 <template>
   <div id="app">
     <Header title="购物车案例"></Header>
-    <List
-      v-for="item in list"
-      :key="item.id"
-      :id="item.id"
-      :name="item.goods_name"
-      :img="item.goods_img"
-      :price="item.goods_price"
-      :count="item.goods_count"
-      :state="item.goods_state"
-      @onChange-state="changeState"
-    ></List>
+    <div class="box">
+      <List
+        v-for="item in list"
+        :key="item.id"
+        :id="item.id"
+        :name="item.goods_name"
+        :img="item.goods_img"
+        :price="item.goods_price"
+        :count="item.goods_count"
+        :state="item.goods_state"
+        @onChange-state="changeState"
+      >
+        <counter
+          :id="item.id"
+          :count="item.goods_count"
+          @menus="menus"
+          @add="add"
+        ></counter>
+      </List>
+    </div>
     <Footer
       @checkAll="checkAll"
       :isFull="isFull"
@@ -25,7 +34,7 @@ import Header from "@/components/Header/Header.vue";
 import Footer from "@/components/Footer/Footer.vue";
 import List from "@/components/List/List.vue";
 import axios from "axios";
-import eventBus from "@/until/eventBus";
+import Counter from "@/components/Counter/counter.vue";
 export default {
   data() {
     return { list: [] };
@@ -34,11 +43,10 @@ export default {
     Header,
     List,
     Footer,
+    Counter,
   },
   created() {
     this.getlist();
-    eventBus.$on("menu", this.menu);
-    eventBus.$on("add", this.add);
   },
   computed: {
     isFull() {
@@ -56,7 +64,7 @@ export default {
     },
   },
   methods: {
-    menu(id) {
+    menus(id) {
       this.list.some((item) => {
         if (item.id == id && item.goods_count > 1) {
           item.goods_count = item.goods_count - 1;
@@ -93,4 +101,9 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+.box {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+</style>
